@@ -2,7 +2,6 @@ import argparse
 from collections import Counter
 import pandas as pd
 import numpy as np
-import random
 # import warnings
 # warnings.filterwarnings("ignore")
 
@@ -16,7 +15,7 @@ my_parser.add_argument('--language',
 					   '-l',
 					   action='store',
 					   default='eng',
-					   help='target language of Likert experiment: eng or ita')
+					   help='target language of Likert experiment')
 
 args = my_parser.parse_args()
 
@@ -48,21 +47,6 @@ else:
 csv2 = pd.read_csv(infoVerbs)
 csv_out = csv1.merge(csv2, how="outer", on=['verb']) # "outer merge" keeps unmatched rows (merge defaults to inner merge)
 csv_out.sort_values(by=['participant'], ascending=[True]).to_csv(taggedFile, index=False)
-
-# detailed info on results
-likertInfo = csv_out.loc[csv_out.kind == 'EXP'][['participant', 'perf', 'iter', 'telicity', 'mannspec', 'slider.response']].groupby(['participant', 'perf', 'iter', 'telicity', 'mannspec']).agg(['mean']).reset_index()
-telicYes = likertInfo.loc[likertInfo.telicity == "yes"].mean()
-telicNo = likertInfo.loc[likertInfo.telicity == "no"].mean()
-print("telicity: yes ", telicYes, "no ", telicNo)
-perfYes = likertInfo.loc[likertInfo.perf == "yes"].mean()
-perfNo = likertInfo.loc[likertInfo.perf == "no"].mean()
-print("perfectivity: yes ", perfYes, "no ", perfNo)
-mannspecYes = likertInfo.loc[likertInfo.mannspec == "yes"].mean()
-mannspecNo = likertInfo.loc[likertInfo.mannspec == "no"].mean()
-print("mannspec: yes ", mannspecYes, "no ", mannspecNo)
-iterYes = likertInfo.loc[likertInfo.iter == "yes"].mean()
-iterNo = likertInfo.loc[likertInfo.iter == "no"].mean()
-print("iterativity: yes ", iterYes, "no ", iterNo)
 
 taggedFile2 = pd.read_csv(taggedFile)
 
